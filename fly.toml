@@ -1,6 +1,38 @@
+# ====================================
+# FLY.IO CONFIG - GTA DNS SERVER
+# ====================================
+
 app = "gta-dns-vitorgamer999"
-primary_region = "gru"
+primary_region = "gru"  # São Paulo, Brasil
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  TZ = "America/Sao_Paulo"
 
 [[services]]
   protocol = "udp"
   internal_port = 53
+
+  [[services.ports]]
+    port = 53
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 53
+
+  [[services.ports]]
+    port = 53
+
+[http_service]
+  internal_port = 53
+  force_https = false
+  auto_stop_machines = false
+  auto_start_machines = false
+  min_machines_running = 1
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256
