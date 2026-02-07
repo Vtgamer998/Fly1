@@ -1,0 +1,3 @@
+address=/rockstargames.com/app-113p.onrender.com
+server=8.8.8.8
+log-queries

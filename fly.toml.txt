@@ -1,0 +1,6 @@
+app = "gta-dns-vitorgamer999"
+primary_region = "gru"
+
+[[services]]
+  protocol = "udp"
+  internal_port = 53
