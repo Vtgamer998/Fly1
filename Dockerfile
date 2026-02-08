@@ -1,15 +1,24 @@
 FROM alpine:latest
 
-RUN apk update && apk add --no-cache dnsmasq bash
+# Instalar dnsmasq e ferramentas de rede
+RUN apk update && apk add --no-cache \
+    dnsmasq \
+    iproute2 \
+    net-tools \
+    busybox-extras
 
+# Criar diretório necessário para dnsmasq
+RUN mkdir -p /var/lib/misc
+
+# Copiar configuração
 COPY dnsmasq.conf /etc/dnsmasq.conf
 
-# Script para verificar configuração
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
+# Script de inicialização robusto
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Expor portas
+# Portas DNS
 EXPOSE 53/udp 53/tcp
 
-# Usar script que verifica antes de iniciar
-CMD ["/start.sh"]
+# Usar entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
