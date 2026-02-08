@@ -1,48 +1,19 @@
-# fly.toml app configuration file
-# See https://fly.io/docs/reference/configuration-file
+app = 'gta-dns-vitorgamer999'
+primary_region = 'gru'
 
-app = "fly1-tatepq"
-primary_region = "gru"
+[http_service]
+  auto_stop_machines = 'off'  # ← ESSENCIAL!
+  min_machines_running = 1
 
-kill_signal = "SIGINT"
-kill_timeout = 5
-
-[build]
-  dockerfile = "Dockerfile"
-
-[compute]
-  cpu_kind = "shared"
-  cpus = 1
-  memory_mb = 256
-
-# Serviço UDP (DNS)
 [[services]]
+  protocol = 'udp'
   internal_port = 53
-  protocol = "udp"
-  
   [[services.ports]]
     port = 53
-    force_https = false
-    handlers = []
-  
-  # Health check CORRETO para UDP (em SEGUNDOS ou com unidade)
-  [[services.udp_checks]]
-    interval = "10s"
-    timeout = "2s"
-    grace_period = "5s"
+```
 
-# Serviço TCP (DNS)
-[[services]]
-  internal_port = 53
-  protocol = "tcp"
-  
-  [[services.ports]]
-    port = 53
-    force_https = false
-    handlers = []
-  
-  # Health check CORRETO para TCP
-  [[services.tcp_checks]]
-    interval = "10s"
-    timeout = "2s"
-    grace_period = "5s"
+### **5. .dockerignore**
+```
+.git
+*.md
+deploy.sh
