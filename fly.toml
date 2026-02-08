@@ -1,3 +1,6 @@
+# fly.toml app configuration file
+# See https://fly.io/docs/reference/configuration-file
+
 app = "fly1-tatepq"
 primary_region = "gru"
 
@@ -7,7 +10,6 @@ kill_timeout = 5
 [build]
   dockerfile = "Dockerfile"
 
-# Configuração de VM MÍNIMA (evita problemas)
 [compute]
   cpu_kind = "shared"
   cpus = 1
