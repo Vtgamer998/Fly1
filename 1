@@ -1,49 +1,23 @@
-# CONFIGURAÇÃO CORRIGIDA - ESCUTA EM TODAS AS INTERFACES
+# Configuração mínima e funcional
 port=53
-listen-address=0.0.0.0  # <-- CRÍTICO: escuta em todas interfaces
+listen-address=0.0.0.0
 bind-interfaces
-bind-dynamic
 user=root
+
+# Servidores DNS upstream
 no-resolv
-no-poll
 server=8.8.8.8
 server=8.8.4.4
 
-# Logs MÁXIMOS para debug
+# Logs para debug
 log-queries
-log-dhcp
 log-facility=-
-log-async=100
+log-async
 
-# Interface explícita
-interface=eth0
-interface=lo
-
-# Nunca escutar apenas em localhost
-except-interface=lo  # Opcional: exceto loopback se necessário
-
-# Redirecionamentos GTA
-
-# URLs principais da Rockstar
-address=/rockstargames.com/app-113p.onrender.com
-address=/ros.rockstargames.com/app-113p.onrender.com
+# Redirecionamentos GTA Online
 address=/prod.ros.rockstargames.com/app-113p.onrender.com
+address=/gtavprod.cloudapp.akamaized.net/app-113p.onrender.com
 
-# Social Club
-address=/socialclub.rockstargames.com/app-113p.onrender.com
-address=/scapi.rockstargames.com/app-113p.onrender.com
-address=/auth.rockstargames.com/app-113p.onrender.com
-
-# Telemetria
-address=/telemetry.ros.rockstargames.com/app-113p.onrender.com
-address=/prod.telemetry.ros.rockstargames.com/app-113p.onrender.com
-
-# Game Services
-address=/gameservices.ros.rockstargames.com/app-113p.onrender.com
-
-# Matchmaking
-address=/matchmaking.rockstargames.com/app-113p.onrender.com
-
-# Cache pequeno
-cache-size=50
-max-cache-ttl=30
+# Configurações de performance
+cache-size=100
+max-cache-ttl=300
