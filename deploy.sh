@@ -1,27 +1,31 @@
 #!/bin/bash
-echo "=== DEPLOY FLY1 DNS ==="
+echo "=== DEPLOY CORRIGIDO ==="
 
-# 1. Parar app se estiver rodando
-flyctl apps destroy fly1-tatepq --yes 2>/dev/null || true
-sleep 5
+# 1. Limpar
+flyctl machine list -a fly1-tatepq | grep -E "^[a-f0-9]{12,}" | while read machine; do
+    echo "Destruindo $machine..."
+    flyctl machine destroy $machine -a fly1-tatepq --force 2>/dev/null
+done
+sleep 3
 
-# 2. Criar novo app
-flyctl apps create fly1-tatepq || true
+# 2. Construir localmente (testar)
+echo "=== TESTE LOCAL ==="
+docker build -t dns-test .
+docker run -d --name dns-test -p 5353:53/udp -p 5353:53/tcp dns-test
+sleep 2
+docker logs dns-test
+docker rm -f dns-test
 
-# 3. Configurar região
-flyctl regions set gru -a fly1-tatepq
+# 3. Deploy
+echo "=== DEPLOY FLY.IO ==="
+flyctl deploy -a fly1-tatepq --strategy immediate --detach
 
-# 4. Deploy
-echo "Fazendo deploy..."
-flyctl deploy -a fly1-tatepq --remote-only
+# 4. Monitorar
+echo "=== MONITORANDO (aguarde 30s) ==="
+sleep 30
+flyctl logs -a fly1-tatepq --since=30s
 
-# 5. IP público
-echo "Alocando IP..."
-flyctl ips allocate-v4 -a fly1-tatepq
-
-# 6. Status
+# 5. Status
 echo "=== STATUS ==="
 flyctl status -a fly1-tatepq
-flyctl ips list -a fly1-tatepq
-
-echo "Use este IP no Xbox 360 como DNS primário!"
+flyctl machine list -a fly1-tatepq
