@@ -1,23 +1,15 @@
-# ====================================
-# DNS SERVER PARA GTA ONLINE
-# Dockerfile para Fly.io
-# ====================================
+FROM alpine:latest
 
-FROM alpine:3.19
+RUN apk update && apk add --no-cache dnsmasq bash
 
-# Instalar dnsmasq
-RUN apk add --no-cache dnsmasq
-
-# Copiar configuração
 COPY dnsmasq.conf /etc/dnsmasq.conf
 
-# Expor porta DNS
-EXPOSE 53/udp
-EXPOSE 53/tcp
+# Script para verificar configuração
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD nslookup rockstargames.com localhost || exit 1
+# Expor portas
+EXPOSE 53/udp 53/tcp
 
-# Iniciar dnsmasq em foreground (não daemon)
-CMD ["dnsmasq", "--no-daemon", "--log-queries", "--log-facility=-"]
+# Usar script que verifica antes de iniciar
+CMD ["/start.sh"]
