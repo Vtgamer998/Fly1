@@ -1,19 +1,37 @@
 app = 'gta-dns-vitorgamer999'
 primary_region = 'gru'
 
+[build]
+
+[env]
+  TZ = 'America/Sao_Paulo'
+
+# HTTP service (necessário para Fly.io)
 [http_service]
-  auto_stop_machines = 'off'  # ← ESSENCIAL!
+  internal_port = 53
+  force_https = false
+  auto_stop_machines = 'off'
+  auto_start_machines = true
   min_machines_running = 1
 
+# VM Configuration
+[[vm]]
+  memory = '256mb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+# DNS Service - UDP (PRINCIPAL - GTA usa UDP)
 [[services]]
   protocol = 'udp'
   internal_port = 53
+
   [[services.ports]]
     port = 53
-```
 
-### **5. .dockerignore**
-```
-.git
-*.md
-deploy.sh
+# DNS Service - TCP (BACKUP)
+[[services]]
+  protocol = 'tcp'
+  internal_port = 53
+
+  [[services.ports]]
+    port = 53
