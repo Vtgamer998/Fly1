@@ -1,37 +1,23 @@
-app = 'gta-dns-vitorgamer999'
+# fly.toml app configuration file generated for fly1-bxkt3q on 2026-02-08T18:00:48Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'fly1-bxkt3q'
 primary_region = 'gru'
 
 [build]
 
-[env]
-  TZ = 'America/Sao_Paulo'
-
-# HTTP service (necessário para Fly.io)
 [http_service]
-  internal_port = 53
-  force_https = false
-  auto_stop_machines = 'off'
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 1
+  min_machines_running = 0
+  processes = ['app']
 
-# VM Configuration
 [[vm]]
-  memory = '256mb'
+  memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
-
-# DNS Service - UDP (PRINCIPAL - GTA usa UDP)
-[[services]]
-  protocol = 'udp'
-  internal_port = 53
-
-  [[services.ports]]
-    port = 53
-
-# DNS Service - TCP (BACKUP)
-[[services]]
-  protocol = 'tcp'
-  internal_port = 53
-
-  [[services.ports]]
-    port = 53
+  memory_mb = 256
