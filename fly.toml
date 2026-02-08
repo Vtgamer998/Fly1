@@ -1,3 +1,6 @@
+# fly.toml app configuration file
+# See https://fly.io/docs/reference/configuration-file
+
 app = "fly1-tatepq"
 primary_region = "gru"
 
@@ -19,6 +22,14 @@ kill_timeout = 5
   
   [[services.ports]]
     port = 53
+    force_https = false
+    handlers = []
+  
+  # Health check CORRETO para UDP (em SEGUNDOS ou com unidade)
+  [[services.udp_checks]]
+    interval = "10s"
+    timeout = "2s"
+    grace_period = "5s"
 
 # Serviço TCP (DNS)
 [[services]]
@@ -27,3 +38,11 @@ kill_timeout = 5
   
   [[services.ports]]
     port = 53
+    force_https = false
+    handlers = []
+  
+  # Health check CORRETO para TCP
+  [[services.tcp_checks]]
+    interval = "10s"
+    timeout = "2s"
+    grace_period = "5s"
