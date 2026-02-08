@@ -1,0 +1,31 @@
+# CONFIGURAÇÃO CORRIGIDA - ESCUTA EM TODAS AS INTERFACES
+port=53
+listen-address=0.0.0.0  # <-- CRÍTICO: escuta em todas interfaces
+bind-interfaces
+bind-dynamic
+user=root
+no-resolv
+no-poll
+server=8.8.8.8
+server=8.8.4.4
+
+# Logs MÁXIMOS para debug
+log-queries
+log-dhcp
+log-facility=-
+log-async=100
+
+# Interface explícita
+interface=eth0
+interface=lo
+
+# Nunca escutar apenas em localhost
+except-interface=lo  # Opcional: exceto loopback se necessário
+
+# Redirecionamentos GTA
+address=/prod.ros.rockstargames.com/app-113p.onrender.com
+address=/gtavprod.cloudapp.akamaized.net/app-113p.onrender.com
+
+# Cache pequeno
+cache-size=50
+max-cache-ttl=30
