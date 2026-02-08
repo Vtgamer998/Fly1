@@ -1,24 +1,21 @@
-FROM alpine:latest
+FROM alpine:3.19
 
-# Instalar dnsmasq e ferramentas de rede
-RUN apk update && apk add --no-cache \
-    dnsmasq \
-    iproute2 \
-    net-tools \
-    busybox-extras
-
-# Criar diretório necessário para dnsmasq
-RUN mkdir -p /var/lib/misc
+# Instalar dnsmasq
+RUN apk add --no-cache dnsmasq
 
 # Copiar configuração
 COPY dnsmasq.conf /etc/dnsmasq.conf
 
-# Script de inicialização robusto
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# Criar diretório de logs
+RUN mkdir -p /var/log
 
-# Portas DNS
-EXPOSE 53/udp 53/tcp
+# Expor porta DNS (UDP é a principal)
+EXPOSE 53/udp
+EXPOSE 53/tcp
 
-# Usar entrypoint
-ENTRYPOINT ["/entrypoint.sh"]
+# Health check - verifica se DNS está respondendo
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD nslookup -timeout=2 rockstargames.com 127.0.0.1 || exit 1
+
+# Iniciar dnsmasq em foreground (não daemon)
+CMD ["dnsmasq", "--no-daemon", "--log-queries", "--log-facility=-", "--keep-in-foreground"]
