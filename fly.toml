@@ -1,35 +1,40 @@
-app = "fly1-dns-server"
+app = "fly1-tatepq"
 primary_region = "gru"
+
+kill_signal = "SIGINT"
+kill_timeout = 5
 
 [build]
   dockerfile = "Dockerfile"
 
+# Configuração de VM MÍNIMA (evita problemas)
+[compute]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256
+
+# Serviço UDP (DNS)
 [[services]]
   internal_port = 53
   protocol = "udp"
   
   [[services.ports]]
     port = 53
-  
-  # Health check ESPECIAL para DNS
-  [[services.tcp_checks]]
-    interval = 10000
-    timeout = 2000
-    grace_period = "5s"
+    force_https = false
+    handlers = []
 
+# Serviço TCP (DNS)
 [[services]]
   internal_port = 53
   protocol = "tcp"
   
   [[services.ports]]
     port = 53
-  
-  [[services.tcp_checks]]
-    interval = 10000
-    timeout = 2000
-    grace_period = "5s"
+    force_https = false
+    handlers = []
 
-# Aumentar timeout de deploy
-[deploy]
-  strategy = "rolling"
-  max_unavailable = 0
+# Health checks simples
+[[http_service.checks]]
+  interval = 10000
+  timeout = 2000
+  grace_period = "5s"
